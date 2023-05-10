@@ -15,10 +15,14 @@ template
       container:
        - name:
            image:
-           command:
-           env:
-           - name: MONGO_END
+           volumeMounts:
+      - name: mongo-creds
+        mountPath: "/tmp/mongo-creds"   # the secret files will be mounted as ReadOnly by default here
+  volumes:
+  - name: mongo-creds
+    secret:
+       secretName: mongo-creds           
            valuefrom:
              configMapKeyReference:
                name: my-config
-               key: http://3.82.24.159:8080
+               
