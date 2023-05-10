@@ -22,7 +22,7 @@ pipeline {
             steps {
                 sshagent(['836dd61a-5f60-460f-ba5f-be6d96cfc880']) {
                     sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207'
-                    sh 'scp *.sh ansadmin@172.31.29.207:/opt/ansible'
+                    sh 'scp *.sh ansadmin@172.31.29.207:/opt'
                     sh "ansible-playbook copy.yml"
                     sh "ansible-playbook installationplay.yml"                   
                 }           
@@ -38,8 +38,7 @@ pipeline {
                 }
             }    
         }
-
-        /*
+        
         stage('Sonarqube Analysis') {
             steps {
                 nodejs(nodeJSInstallationName: 'nodejs') {
@@ -51,7 +50,6 @@ pipeline {
                 }
             }
         }  
-        */
 
         stage ('docker image build') {
             //in CLI, run ''usermod -aG docker ansadmin
@@ -67,7 +65,7 @@ pipeline {
             //install TRIVY on the server
             steps {
                 sshagent(['7c6e1a46-5f81-42e5-91b2-4410b5a9e3d2']) {
-                    sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 cd /opt/docker'
+                    sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 cd /opt'
                     sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 trivy image web:v1.$BUILD_ID > scanning.txt'                
             }
             // Scan again and fail on HIGH,CRITICAL vulns
@@ -77,7 +75,7 @@ pipeline {
         stage ('docker image tagging') {
             steps {
                 sshagent(['7c6e1a46-5f81-42e5-91b2-4410b5a9e3d2']) {
-                    sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 cd /opubuntu'
+                    sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 cd /opt'
                     sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 docker tag web:v1.$BUILD_ID web:v1.$BUILD_ID'
                     sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 docker tag web:v1.$BUILD_ID:v1.latest'
                 }
@@ -93,6 +91,14 @@ pipeline {
                         sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 docker image push suribau/$JOB_NAME:v1.$BUILD_ID'
                         sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 docker image push suribau/$JOB_NAME:v1.latest'
                     }
+                }
+            }
+        }
+        stage ('K8s deployment') {
+            steps {
+                sshagent(['7c6e1a46-5f81-42e5-91b2-4410b5a9e3d2']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 cd /opt'
+                    sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 ansible-playbook /opt/ansi.ble.yml'
                 }
             }
         }
