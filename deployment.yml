@@ -20,8 +20,8 @@ template
              mountPath: "/tmp/mongo-creds"   # the secret files will be mounted as ReadOnly by default here
         volumes:
           - name: mongo-creds
-        secret:
-          secretName: mongo-creds           
+            secret:
+              secretName: mongo-creds           
          valuefrom:
            configMapKeyReference:
               name: my-config
