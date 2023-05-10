@@ -12,3 +12,7 @@
         -  Nodejs10+install.sh
         -  Dockerinstall.sh
         -  Docker-compose.sh
+        -  config.yml
+        -  deployment.yml
+        -  secret.yml
+        - svcnodeport.yml
