@@ -13,16 +13,16 @@ template
       name: pod1
     spec:
       container:
-       - name:
-           image:
-           volumeMounts:
-      - name: mongo-creds
-        mountPath: "/tmp/mongo-creds"   # the secret files will be mounted as ReadOnly by default here
-  volumes:
-  - name: mongo-creds
-    secret:
-       secretName: mongo-creds           
-           valuefrom:
-             configMapKeyReference:
-               name: my-config
+       - name: mycont
+         image: suribau/web:v1.12
+         volumeMounts:
+         - name: mongo-creds
+             mountPath: "/tmp/mongo-creds"   # the secret files will be mounted as ReadOnly by default here
+        volumes:
+          - name: mongo-creds
+        secret:
+          secretName: mongo-creds           
+         valuefrom:
+           configMapKeyReference:
+              name: my-config
                
