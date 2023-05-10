@@ -82,7 +82,7 @@ pipeline {
             }
         }
 
-        sstage ('Docker image push') {
+        stage ('Docker image push') {
             steps {
                 sshagent(['7c6e1a46-5f81-42e5-91b2-4410b5a9e3d2']) {
                     //login to dockerhub before running this stage
