@@ -1,0 +1,24 @@
+kind: Deployment
+apiversion: v1
+metadata:
+  name: mywebdeploy
+spec:
+  replicas: 2
+  selector:
+    env: dev
+template
+  metadata:
+  spec:
+    metadata:
+      name: pod1
+    spec:
+      container:
+       - name:
+           image:
+           command:
+           env:
+           - name: MONGO_END
+           valuefrom:
+             configMapKeyReference:
+               name: my-config
+               key: http://3.82.24.159:8080
