@@ -1,18 +1,18 @@
 kind: Deployment
-apiversion: v1
+apiversion: apps/v1
 metadata:
   name: mywebdeploy
 spec:
   replicas: 2
   selector:
     env: dev
-template
-  metadata:
-  spec:
+  template:
     metadata:
-      name: pod1
+      name: mypo
+      labels:
+        env: dev
     spec:
-      container:
+      containers:
        - name: mycont
          image: suribau/web:v1.12
          volumeMounts:
@@ -22,7 +22,8 @@ template
           - name: mongo-creds
             secret:
               secretName: mongo-creds           
-         valuefrom:
-           configMapKeyReference:
+            valuefrom:
+              configMapKeyReference:
               name: my-config
+              key: mongo-creds
                
