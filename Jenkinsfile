@@ -98,7 +98,7 @@ pipeline {
             steps {
                 sshagent(['7c6e1a46-5f81-42e5-91b2-4410b5a9e3d2']) {
                     sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 cd /opt'
-                    sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 ansible-playbook /opt/ansi.ble.yml'
+                    sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 ansible-playbook ansible.yml'
                 }
             }
         }
