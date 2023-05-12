@@ -25,5 +25,5 @@ spec:
             valuefrom:
               configMapKeyReference:
               name: my-config
-              key: mongo-creds
+              key: baseUrl
                
