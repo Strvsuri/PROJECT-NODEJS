@@ -67,7 +67,8 @@ pipeline {
                 sshagent(['7c6e1a46-5f81-42e5-91b2-4410b5a9e3d2']) {
                     sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 cd /opt'
                     sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 trivy image web:v1.$BUILD_ID > scanning.txt'                
-            }
+                }
+            }    
             // Scan again and fail on HIGH,CRITICAL vulns
             sh 'trivy image --ignore-unfixed --vuln-type os,library --exit-code 1 --severity HIGH,CRITICAL '
         } 
@@ -94,7 +95,7 @@ pipeline {
                 }
             }
         }
-        stage ('K8s deployment') {
+        stage ('K8s deployment for testing') {
             steps {
                 sshagent(['7c6e1a46-5f81-42e5-91b2-4410b5a9e3d2']) {
                     sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 cd /opt'
