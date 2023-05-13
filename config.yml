@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: my-config
 data:
-  baseUrl: https://3.82.24.159:27017   #replace with IP:port
+  MONGODB_URI: mongodb://3.89.116.216:27017
