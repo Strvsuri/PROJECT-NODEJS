@@ -1,4 +1,4 @@
-#configMap & secrets as env's 
+# configmap as volume 
 kind: Deployment
 apiversion: aaps/v1
 metadata:
@@ -18,19 +18,15 @@ template:
       - name: mycont
         image: suribau/web:v1.12
         env:
-        - name: URI
+        - name: MONGODB_URI
           valueFrom:
             configMapKeyRef:
               name: my-config
               key: MONGODB_URI
-        - name: USER
+        - name: SESSION_SECRET
           valueFrom:
             secretKeyRef:
               name: mongo-creds
-              key: username
-        - name: PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mongo-creds
-              key: password
+              key: secret
+        
                
