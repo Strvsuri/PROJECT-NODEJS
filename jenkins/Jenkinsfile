@@ -103,6 +103,10 @@ pipeline {
         }
 
         stage ('K8s-AWS EKS deployment') {
+            when {
+                branch "dev"
+            }
+            steps {
             steps {
                 sshagent(['7c6e1a46-5f81-42e5-91b2-4410b5a9e3d2']) {     //if client is chabged script must be changed
                     sh 'ssh -o StrictHostKeyChecking=no ansadmin@172.31.29.207 cd /opt'
