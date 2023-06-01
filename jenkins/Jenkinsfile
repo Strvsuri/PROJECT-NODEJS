@@ -80,15 +80,27 @@ pipeline {
         stage ('Trivy scanning') {
             //install TRIVY on the server
             steps {
-                sshagent(['nodeapp']) {
+                script {
+                    sshagent(['nodeapp']) {
                     sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.95.196'
-                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.95.196 trivy image web:v1.$BUILD_ID > scanning.txt'                
+                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.95.196 trivy image web:v1.$BUILD_ID > scanning.txt'
+                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.95.196 trivy image web:v1.$BUILD_ID --ignore-unfixed --format json > scanning.json'
+                    }
+                    
+                    // Process the Trivy JSON output to extract vulnerabilities
+                    def vulnerabilities = parseTrivyJSON('scanning.json')
+                    
+                    // Check for HIGH or CRITICAL vulnerabilities
+                    def hasHighCritical = vulnerabilities.any { it.severity in ['HIGH', 'CRITICAL'] }
+                    
+                    if (hasHighCritical) {
+                        error('Aborting pipeline due to HIGH or CRITICAL vulnerabilities found')
+                    } else {
+                        echo 'No HIGH or CRITICAL vulnerabilities found. Continuing pipeline...'
+                    }            
                 }
-            }    
-            // Scan again and fail on HIGH,CRITICAL vulns
-            sh 'trivy image --ignore-unfixed --vuln-type os,library --exit-code 1 --severity HIGH,CRITICAL '
+            }  
         }
-
 
         stage ('K8s-AWS EKS deployment') {
             steps {
